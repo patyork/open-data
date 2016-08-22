@@ -12,10 +12,11 @@ class Status(Resource):
 		
 class AssessorSearch(Resource):
 	def get(self):
-		parser = reqparse.RequestParser()
+		parser = reqparse.RequestParser(bundle_errors=True)
 		parser.add_argument('parcelNum', type=unicode, help="Parcel Number")
 		
 		args = parser.parse_args()
+		abort(405)
 		
 		return {'parcelNum': args['parcelNum']}
 
