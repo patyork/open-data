@@ -22,6 +22,8 @@ class AssessorSearch(Resource):
 		parser.add_argument('location', type=unicode, help="Parial Location")
 		
 		args = parser.parse_args()
+		print type(args)
+		print args.items()
 		
 		if sum([1 for x in args.values() if x is not None]) == 0:
 			abort(400, message='At least one search term is required.')
@@ -29,6 +31,7 @@ class AssessorSearch(Resource):
 			abort(400, message='parcelNum must be included in a ranged search.')
 		
 		try:
+			return {'results' : H.search(args)}
 			return {'results' : H.search({'srchpar1' : args['parcelNum']})}
 		except r.ConnectionError as e:
 			abort(504, message='Underlying connection to the governmental data source is unavaiable (County or City website down!)')

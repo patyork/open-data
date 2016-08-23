@@ -17,16 +17,9 @@ class assessor:
 		   'Accept-Language': 'en-US,en;q=0.8'
 	    }
 	dataSearch = {
-		   'srchsort' : '1', # Sort by Parcel num by default (1:Parcel, ??
-		   'srchdist1' : 'All', # District (All, 1.0, 2.0, 3.0); Also appears in results
-		   'CGIOption' : 'Search'
-	    }
-	    
-	dataSearchDefault = {
-		'srchpar1' : '', # Parcel number start; 
-		'srchname' : '', # Partial Owner Name
-		'srchpar2' : '', # Parcel number end; inclusive
-		'srchaorl' : 'A', # Name Type, Assesed or Legal (A:Assesed, L:Legal)
+		'srchsort' : '1', # Sort by Parcel num by default (1:Parcel, ??
+		'srchdist1' : 'All', # District (All, 1.0, 2.0, 3.0); Also appears in results
+		'CGIOption' : 'Search',
 		'srchluc1' : '', # Land-Use-Code Start
 		'srchluc2' : '', # Land-Use-Code End
 		'srchluci1' : '', # Specific LUC #1
@@ -35,18 +28,29 @@ class assessor:
 		'srchluci4' : '', # Specific LUC #4
 		'srchacr1' : '', # Acreage Minimum
 		'srchacr2' : '', # Acreage Maximum
-		'srchlocn' : '', # Partial Location
 		'srchval1' : '', # Net Assessed Value min
-		'srchval2' : '' # Net Assessed Value max
+		'srchval2' : '', # Net Assessed Value max
+		
+		'srchpar1' : '', # Parcel number start
+		'srchpar2' : '', # Parcel number end; inclusive
+		'srchname' : '', # Partial Owner Name
+		'srchlocn' : '', # Partial Location
+		'srchaorl' : 'A' # Name Type, Assesed or Legal (A:Assesed, L:Legal)
 	}
-	
-	def ds(self):
-		return dict(**self.dataSearchDefault)
 
 	def search(self, queryParams):
+		
+		# Map 'nicer' names to the required names
+		cleanQueryParams = {}
+		cleanQueryParams['srchpar1'] = queryParams['parcelNum']
+		cleanQueryParams['srchpar2'] = queryParams['parcelNumRange']
+		cleanQueryParams['srchname'] = queryParams['ownerName']
+		cleanQueryParams['srchlocn'] = queryParams['location']
+		
+		
 		try:
 			tmp = r.post(self.endpointSearch,
-				dict(self.dataSearch.items() + queryParams.items()),
+				dict(self.dataSearch.items() + [(k,v) for k, v in cleanQueryParams.items() if v is not None]),
 				headers=self.headersSearch)
 		   
 			soup = BeautifulSoup(tmp.content, 'html.parser')
