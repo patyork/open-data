@@ -44,29 +44,33 @@ class assessor:
 		return dict(**self.dataSearchDefault)
 
 	def search(self, queryParams):
-	    try:
-		   tmp = r.post(self.endpointSearch,
-		                dict(self.dataSearch.items() + queryParams.items()),
-		                headers=self.headersSearch)
-	    except r.ConnectionError:
-		   print r.ConnectionError
-	    
-	    soup = BeautifulSoup(tmp.content, 'html.parser')
-	    results = []
-	    for table in soup.find_all('table'):
-		   if 'Search' in table.get_text() and 'Results' in table.get_text():
-		       #print table
-		       for tr in table.find_all('tr')[2:-1]:
-		           cols = tr.find_all('td')
-		           
-		           results.append( {
-		               'parcelNum' : cols[0].string,
-		               'ownerName' : cols[1].string,
-		               'location' : cols[2].string,
-		               'district' : cols[3].string,
-		               'useCode' : cols[4].string,
-		               'acreage' : cols[5].string,
-		               'netValue' : cols[6].string
-		           })
-	    return results
+		try:
+			tmp = r.post(self.endpointSearch,
+				dict(self.dataSearch.items() + queryParams.items()),
+				headers=self.headersSearch)
 		   
+			soup = BeautifulSoup(tmp.content, 'html.parser')
+			results = []
+			for table in soup.find_all('table'):
+				if 'Search' in table.get_text() and 'Results' in table.get_text():
+					#print table
+					for tr in table.find_all('tr')[2:-1]:
+						cols = tr.find_all('td')
+				      
+						results.append( {
+							'parcelNum' : cols[0].string,
+							'ownerName' : cols[1].string,
+							'location' : cols[2].string,
+							'district' : cols[3].string,
+							'useCode' : cols[4].string,
+							'acreage' : cols[5].string,
+							'netValue' : cols[6].string
+						})
+			if results[0]['ownerName'] == '*** No results found ***':
+				return None
+			return results
+		   
+		except r.ConnectionError as e:
+			
+			raise e
+			
