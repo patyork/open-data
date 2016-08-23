@@ -6,6 +6,8 @@ import humboldt
 app = Flask(__name__)
 api = Api(app)
 
+H = humboldt.assessor()
+
 class Status(Resource):
 	def get(self):
 		return {'status':201, 'hello': 'world'}
@@ -13,10 +15,11 @@ class Status(Resource):
 class AssessorSearch(Resource):
 	def get(self):
 		parser = reqparse.RequestParser(bundle_errors=True)
-		parser.add_argument('parcelNum', type=unicode, help="Parcel Number")
+		parser.add_argument('parcelNum', required=True type=unicode, help="Parcel Number")
 		
 		args = parser.parse_args()
-		abort(405)
+		
+		return {'results' : H.search({'srchpar1', args['parcelNum']})}
 		
 		return {'parcelNum': args['parcelNum']}
 

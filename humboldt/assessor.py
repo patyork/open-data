@@ -21,11 +21,32 @@ class assessor:
 		   'srchdist1' : 'All', # District (All, 1.0, 2.0, 3.0); Also appears in results
 		   'CGIOption' : 'Search'
 	    }
+	    
+	dataSearchDefault = {
+		'srchpar1' : '', # Parcel number start; 
+		'srchname' : '', # Partial Owner Name
+		'srchpar2' : '', # Parcel number end; inclusive
+		'srchaorl' : 'A', # Name Type, Assesed or Legal (A:Assesed, L:Legal)
+		'srchluc1' : '', # Land-Use-Code Start
+		'srchluc2' : '', # Land-Use-Code End
+		'srchluci1' : '', # Specific LUC #1
+		'srchluci2' : '', # Specific LUC #2
+		'srchluci3' : '', # Specific LUC #3
+		'srchluci4' : '', # Specific LUC #4
+		'srchacr1' : '', # Acreage Minimum
+		'srchacr2' : '', # Acreage Maximum
+		'srchlocn' : '', # Partial Location
+		'srchval1' : '', # Net Assessed Value min
+		'srchval2' : '' # Net Assessed Value max
+	}
+	
+	def ds(self):
+		return dict(**self.dataSearchDefault)
 
 	def search(self, queryParams):
 	    try:
 		   tmp = r.post(self.endpointSearch,
-		                dict(queryParams, **self.dataSearch),
+		                dict(self.dataSearch.items() + queryParams.items()),
 		                headers=self.headersSearch)
 	    except r.ConnectionError:
 		   print r.ConnectionError
