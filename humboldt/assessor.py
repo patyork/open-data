@@ -60,7 +60,7 @@ class assessor:
 			tmp = r.post(self.endpointSearch,
 				dict(self.dataSearch.items() + [(k,v) for k, v in cleanQueryParams.items() if v is not None]),
 				headers=self.headersSearch,
-				timeout=15.0)
+				timeout=10.0)
 		   
 			soup = BeautifulSoup(tmp.content, 'html.parser')
 			results = []
