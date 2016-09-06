@@ -12,6 +12,9 @@ H = humboldt.assessor()
 def isEmpty(x):
 	if x is None or x == '': return True
 	return False
+	
+def testClient():
+	return app.test_client()
 
 class Status(Resource):
 	def get(self):
@@ -36,6 +39,8 @@ class AssessorSearch(Resource):
 			return {'results' : H.search(args)}
 			return {'results' : H.search({'srchpar1' : args['parcelNum']})}
 		except r.ConnectionError as e:
+			abort(504, message='Underlying connection to the governmental data source is unavaiable (County or City website down!)')
+		except r.Timeout as e:
 			abort(504, message='Underlying connection to the governmental data source is unavaiable (County or City website down!)')
 
 api.add_resource(Status, '/')

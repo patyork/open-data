@@ -47,11 +47,20 @@ class assessor:
 		cleanQueryParams['srchname'] = queryParams['ownerName']
 		cleanQueryParams['srchlocn'] = queryParams['location']
 		
+		try:
+			return self._getResultTable(cleanQueryParams)
+		except r.ConnectionError as e:
+			raise e
+		except r.Timeout as e:
+			raise e
 		
+	
+	def _getResultTable(self, cleanQueryParams, pageStart=0):
 		try:
 			tmp = r.post(self.endpointSearch,
 				dict(self.dataSearch.items() + [(k,v) for k, v in cleanQueryParams.items() if v is not None]),
-				headers=self.headersSearch)
+				headers=self.headersSearch,
+				timeout=15.0)
 		   
 			soup = BeautifulSoup(tmp.content, 'html.parser')
 			results = []
@@ -75,6 +84,7 @@ class assessor:
 			return results
 		   
 		except r.ConnectionError as e:
-			
+			raise e
+		except r.Timeout as e:
 			raise e
 			
