@@ -3,16 +3,16 @@ from bs4 import BeautifulSoup
 
 class assessor:
 	
-	endpointSearch = 'http://www.hcnv.us:1401/cgi-bin/asw100'
+	endpointSearch = 'http://records.elkocountynv.net:1401/cgi-bin/asw100'
 	headersSearch = {
 		   'Pragma': 'no-cache',
 		   'Cache-Control': 'no-cache',
-		   'Origin': 'http://www.hcnv.us:1401',
+		   'Origin': 'http://records.elkocountynv.net:1401',
 		   'Upgrade-Insecure-Requests': '1',
 		   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36',
 		   'Content-Type': 'application/x-www-form-urlencoded',
 		   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-		   'Referer': 'http://www.hcnv.us:1401/cgi-bin/asw100',
+		   'Referer': 'hhttp://records.elkocountynv.net:1401/cgi-bin/asw100',
 		   'Accept-Encoding': 'gzip, deflate',
 		   'Accept-Language': 'en-US,en;q=0.8'
 	    }
@@ -71,7 +71,7 @@ class assessor:
 						cols = tr.find_all('td')
 				      
 						results.append( {
-							'county' : '1',				#Humboldt
+							'county' : '4',				#Elko
 							'parcelNum' : cols[0].string,
 							'ownerName' : cols[1].string,
 							'location' : cols[2].string,

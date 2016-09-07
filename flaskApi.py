@@ -3,11 +3,13 @@ from flask_restful import Resource, Api, reqparse, abort
 import requests as r
 
 import humboldt
+import elko
 
 app = Flask(__name__)
 api = Api(app)
 
 H = humboldt.assessor()
+E = elko.assessor()
 
 def isEmpty(x):
 	if x is None or x == '': return True
@@ -19,6 +21,9 @@ def testClient():
 class Status(Resource):
 	def get(self):
 		return {'status':201, 'hello': 'world'}
+		
+def abort504():
+	abort(504, message='Underlying connection to the governmental data source is unavaiable (County or City website down!)')
 		
 class AssessorSearch(Resource):
 	def get(self):
@@ -34,14 +39,26 @@ class AssessorSearch(Resource):
 			abort(400, message='At least one search term is required.')
 		elif not isEmpty(args['parcelNumRange']) and isEmpty(args['parcelNum']):
 			abort(400, message='parcelNum must be included in a ranged search.')
+			
+		searchResults = []
 		
 		try:
-			return {'results' : H.search(args)}
-			return {'results' : H.search({'srchpar1' : args['parcelNum']})}
+			searchResults += H.search(args)
 		except r.ConnectionError as e:
-			abort(504, message='Underlying connection to the governmental data source is unavaiable (County or City website down!)')
+			abort504()
 		except r.Timeout as e:
-			abort(504, message='Underlying connection to the governmental data source is unavaiable (County or City website down!)')
+			abort504()
+		
+		try:
+			searchResults += E.search(args)
+		except r.ConnectionError as e:
+			abort504()
+		except r.Timeout as e:
+			abort504()
+			
+			
+		
+		return {'results' : searchResults}
 
 api.add_resource(Status, '/')
 api.add_resource(AssessorSearch, '/search')
