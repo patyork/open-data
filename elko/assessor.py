@@ -80,7 +80,7 @@ class assessor:
                             'netValue': cols[6].string
                         })
             if results[0]['ownerName'] == '*** No results found ***':
-                return None
+                return []
             return results
 
         except r.ConnectionError as e:
